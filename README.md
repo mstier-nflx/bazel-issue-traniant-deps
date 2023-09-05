@@ -2,7 +2,7 @@
 
 To reproduce typechecking issue, run ./build-bazel-bar.sh
 
-Look at bazel-bin/bar/types/index.d.ts
+Look at bazel-bin/bar/dist/types/index.d.ts
 
 Compare to ./build-tsc-bar.sh
 
