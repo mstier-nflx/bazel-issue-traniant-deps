@@ -1,0 +1,10 @@
+[CommandLineRewriter]
+  [CommandLineRewriter.test]
+    type = 'SuggestTestTarget'
+
+[DaemonConfig]
+  enabled = false
+  inotify_ignore_regexes = ['.*\.bazelrc', '\.metals', '\.git' ]
+
+[IndexerConfig]
+  blacklist_rule_kind = ["dagobah_loader"]

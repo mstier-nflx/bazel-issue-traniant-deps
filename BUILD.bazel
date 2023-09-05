@@ -1,0 +1,72 @@
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_js//npm:defs.bzl", "npm_link_package", "npm_package")
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
+
+exports_files(
+    [
+        "tsconfig.json",
+        "package.json",
+        "babel.config.js",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+package(default_visibility = ["//visibility:public"])
+
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+npm_link_all_packages("node_modules")
+
+npm_link_package(
+    name = "node_modules/@rule-ts-transitive-dep-issues-example/foo-package",
+    src = "//foo:dist",
+)
+
+ts_config(
+    name = "ts_config",
+    src = "tsconfig.json",
+)
+
+copy_to_bin(
+    name = "rollup.config",
+    srcs = ["rollup.config.mjs"],
+    visibility = ["//:__subpackages__"],
+)
+
+copy_to_bin(
+    name = "package",
+    srcs = ["package.json"],
+    visibility = ["//:__subpackages__"],
+)
+
+js_library(
+    name = "package_json",
+    srcs = ["package.json"],
+    visibility = ["//:__subpackages__"],
+)
+
+js_library(
+    name = "babel_config",
+    srcs = ["babel.config.js"],
+)
+
+js_library(
+    name = "jest_setup",
+    srcs = ["jest-setup.js"],
+)
+
+js_library(
+    name = "jest_config",
+    srcs = ["jest.config.js"],
+)
+
+copy_directory(
+    name = "copy_mocks",
+    src = "__mocks__",
+    out = "__mocks__",
+)
+
+

@@ -1,0 +1,20 @@
+{
+  "name": "@rule-ts-transitive-dep-issues-example/foo-package",
+  "version": "0.2.0",
+  "description": "foo",
+  "author": "mstier",
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/types/lib/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn:build:*",
+    "build:rollup": "bili --config ../bili.config.js",
+    "clean": "rimraf node_modules dist build",
+    "watch": "concurrently \"yarn:watch:*\"",
+    "watch:rollup": "bili --watch --config ../bili.config.js --format esm"
+  }
+}

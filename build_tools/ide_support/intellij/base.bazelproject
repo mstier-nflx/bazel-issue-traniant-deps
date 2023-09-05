@@ -1,0 +1,27 @@
+directories:
+  .
+  -.ijwb
+  -build
+  -.gradle
+  # By default, we've added your entire workspace ('.')  .
+
+# Automatically includes all relevant targets under the 'directories' above
+derive_targets_from_directories: false
+
+java_language_level: 8
+
+shard_sync: true
+target_shard_size: 200
+
+# We only target the common packages for now instead of the entire repo.
+targets:
+  //common_loc/...
+
+additional_languages:
+  javascript
+  typescript
+
+build_flags:
+  --config=intellij
+
+

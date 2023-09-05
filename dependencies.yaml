@@ -1,0 +1,44 @@
+options:
+  languages: [ "java" ]
+  resolverOptions:
+    lockFiles:
+      - "./foo/dependencies.lock"
+      - "./bar/dependencies.lock"
+      - "./dependencies.lock"
+    noContentDeps:
+      - "com.github.fommil.netlib:all"
+      - "junit:junit-dep"
+      - "org.codehaus.groovy:groovy-all"
+      - "org.slf4j:slf4j-log4j12@1.7.36"
+      - "com.github.fommil.netlib:netlib-native_ref-linux-armhf"
+      - "com.github.fommil.netlib:netlib-native_ref-linux-i686"
+      - "com.github.fommil.netlib:netlib-native_ref-linux-x86_64"
+      - "com.github.fommil.netlib:netlib-native_ref-osx-x86_64"
+      - "com.github.fommil.netlib:netlib-native_ref-win-i686"
+      - "com.github.fommil.netlib:netlib-native_ref-win-x86_64"
+      - "com.github.fommil.netlib:netlib-native_system-linux-armhf"
+      - "com.github.fommil.netlib:netlib-native_system-linux-i686"
+      - "com.github.fommil.netlib:netlib-native_system-linux-x86_64"
+      - "com.github.fommil.netlib:netlib-native_system-osx-x86_64"
+      - "com.github.fommil.netlib:netlib-native_system-win-i686"
+      - "com.github.fommil.netlib:netlib-native_system-win-x86_64"
+      - "org.slf4j:slf4j-log4j12"
+  resolverType: "gradle"
+  resolvers:
+    - id: "mavencentral"
+      type: "default"
+      url: https://repo.maven.apache.org/maven2/
+    - id: "maven2"
+      type: "default"
+      url: https://repo1.maven.org/maven2/
+  versionConflictPolicy: highest
+
+dependencies:
+  com.google.guava:
+    guava:
+      lang: java
+
+  org.eclipse.jgit:
+    org.eclipse.jgit:
+      lang: java
+      version: "5.7.0.202003110725-r"

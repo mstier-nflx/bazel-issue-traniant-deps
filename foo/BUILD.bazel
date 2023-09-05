@@ -1,0 +1,107 @@
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config", "ts_project")
+load("@aspect_rules_rollup//rollup:defs.bzl", "rollup")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@bazel_skylib//lib:partial.bzl", "partial")
+load("@aspect_rules_swc//swc:defs.bzl", "swc")
+
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_pkg//:mappings.bzl", "pkg_files")
+
+ROLLUP_DEPENDENCIES = [
+    "//:node_modules/rollup-plugin-typescript2",
+    "//:node_modules/rollup-plugin-postcss",
+    "//:node_modules/@rollup/plugin-json",
+    "//:node_modules/@rollup/plugin-node-resolve",
+    "//:node_modules/@rollup/plugin-commonjs",
+    "//:node_modules/sass",
+    "//:node_modules/rollup-plugin-copy",
+    "//:node_modules/rollup-plugin-node-externals",
+    "//:node_modules/builtin-modules",
+    "//:node_modules/@rollup/plugin-babel",
+    "//:node_modules/@babel/plugin-transform-typescript",
+    "//:node_modules/@babel/plugin-proposal-class-properties",
+    "//:node_modules/@babel/preset-typescript",
+    "//:node_modules/@babel/preset-env",
+    "//:node_modules/@babel/preset-react",
+    "//:babel_config",
+]
+
+SRCS = glob(include = [
+    "lib/**/*",
+    "package.json",
+])
+
+ts_project(
+    name = "src_ts",
+    srcs = SRCS,
+    composite = True,
+    declaration = True,
+    declaration_dir = "types",
+    resolve_json_module = True,
+    tsconfig = ":tsconfig",
+    visibility = ["//visibility:public"],
+    supports_workers = False
+)
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//visibility:public"],
+    deps = ["//:ts_config"],
+)
+
+[
+    rollup(
+        name = "bundle-%s" % format,
+        srcs = SRCS + ["//:package"],
+        config_file = "//:rollup.config",
+        entry_points = {
+            "lib/index.js": "index" if format == "cjs" else "index.%s" % format,
+        },
+        format = format,
+        sourcemap = "false",
+        deps = [":src_ts"] + ROLLUP_DEPENDENCIES,
+        node_modules = "//:node_modules",
+    )
+    for format in [
+        "cjs",
+        "esm",
+    ]
+]
+
+filegroup(
+    name = "assets",
+    srcs = glob(
+        include = [
+            "lib/**/*",
+            "package.json",
+        ],
+        exclude = ["lib/**/*.ts"],
+    ),
+)
+
+npm_package(
+    name = "dist",
+    srcs = [
+        ":assets",
+        ":bundle-cjs",
+        ":bundle-esm",
+    ],
+    allow_overwrites = True,
+    package = "@rule-ts-transitive-dep-issues-example/foo-package",
+    replace_prefixes = {"lib": ""},
+    visibility = ["//visibility:public"],
+)
+
+exports_files(["foo_bundle"])
+
+
+pkg_files(
+    name = "template_dist",
+    srcs = [
+        ":dist"
+    ],
+)
+
+package(default_visibility = ["//visibility:public"])

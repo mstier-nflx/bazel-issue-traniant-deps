@@ -1,0 +1,71 @@
+# load("//build_tools/external_tools:wrap_executable.bzl", "wrap_executable")
+
+config_setting(
+    name = "macos_x86",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "macos_arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
+)
+
+# This shoudln't be needed, but once @ioconnell
+# Had this work but not the arm64 one above.
+# config_setting(
+#     name = "macos_aarch64",
+#     constraint_values = [
+#         "@platforms//os:macos",
+#         "@platforms//cpu:aarch64",
+#     ],
+# )
+
+config_setting(
+    name = "macos",
+    constraint_values = [
+        "@platforms//os:macos",
+    ],
+)
+
+config_setting(
+    name = "linux_x86",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+alias(
+    name = "buildifier",
+    actual = select({
+        ":macos_x86": "@buildifier_darwin_x86//:bin",
+        ":macos_arm64": "@buildifier_darwin_arm64//:bin",
+        # ":macos_aarch64": "@buildifier_darwin_arm64//:bin",
+        ":linux_x86": "@buildifier_linux_x86//:bin",
+    }),
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "scalafmt",
+    actual = select({
+        ":macos": "@scalafmt_darwin//:bin",
+        ":linux_x86": "@scalafmt_linux_x86//:bin",
+    }),
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "black",
+    actual = select({
+        ":macos": "@black_macos//:bin",
+        ":linux_x86": "@black_linux_u18//:bin",
+    }),
+    visibility = ["//visibility:public"],
+)
